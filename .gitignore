@@ -1,0 +1,3 @@
+.envgit rm --cached .env
+git commit -m "Removed .env from tracking"
+git push origin main

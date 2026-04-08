@@ -43,6 +43,14 @@ if st.button("🔍 Analyze Complaint", type="primary", use_container_width=True)
 
     # If we have valid text (either from text box or successfully transcribed audio)
     if final_text_to_analyze:
+        with st.spinner("🌍 Translating to English..."):
+            try:
+                from deep_translator import GoogleTranslator
+                english_translation = GoogleTranslator(source='kn', target='en').translate(final_text_to_analyze)
+                st.info(f"**Translated (English):** {english_translation}")
+            except Exception as e:
+                st.error("⚠️ Failed to translate the text.")
+                
         with st.spinner("🛠️ Processing NLP steps..."):
             # Step 1: Preprocessing
             nlp_results = process_complaint(final_text_to_analyze)

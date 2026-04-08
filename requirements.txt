@@ -2,3 +2,4 @@ streamlit>=1.38.0
 indic-nlp-library
 scikit-learn
 SpeechRecognition
+deep-translator

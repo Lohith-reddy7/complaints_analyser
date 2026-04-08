@@ -28,7 +28,8 @@ def analyze_complaint(original_text, preprocessed_tokens):
         docs = list(corpus.values())
         docs.append(input_text)
         
-        vectorizer = TfidfVectorizer()
+        # Using char_wb analyzer to handle Kannada agglutination without needing perfect lemmatizers
+        vectorizer = TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 6))
         try:
             tfidf_matrix = vectorizer.fit_transform(docs)
             input_vector = tfidf_matrix[-1]
