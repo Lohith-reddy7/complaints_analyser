@@ -43,6 +43,36 @@ if st.button("🔍 Analyze Complaint", type="primary", use_container_width=True)
 
     # If we have valid text (either from text box or successfully transcribed audio)
     if final_text_to_analyze:
+        import re
+        import requests
+        import urllib.parse
+        
+        # If the input contains English letters (Kanglish transliteration or direct English)
+        if re.search(r'[a-zA-Z]', final_text_to_analyze):
+            with st.spinner("🔄 Transliterating Kanglish to accurate Kannada script..."):
+                try:
+                    # Use Google Input Tools API for flawless Kanglish transliteration
+                    encoded_text = urllib.parse.quote(final_text_to_analyze)
+                    url = f"https://inputtools.google.com/request?text={encoded_text}&itc=kn-t-i0-und&num=1"
+                    resp = requests.get(url)
+                    resp_json = resp.json()
+                    
+                    if resp_json[0] == 'SUCCESS':
+                        converted_kannada = resp_json[1][0][1][0]
+                        st.success(f"**Auto-Corrected to Kannada Script:** {converted_kannada}")
+                        final_text_to_analyze = converted_kannada
+                    else:
+                        raise Exception("API failure")
+                        
+                except Exception as e:
+                    try:
+                        # Fallback to translation
+                        from deep_translator import GoogleTranslator
+                        converted_kannada = GoogleTranslator(source='auto', target='kn').translate(final_text_to_analyze)
+                        st.success(f"**Translated to Kannada:** {converted_kannada}")
+                        final_text_to_analyze = converted_kannada
+                    except:
+                        st.warning("⚠️ Failed to auto-convert English text to Kannada.")
         with st.spinner("🌍 Translating to English..."):
             try:
                 from deep_translator import GoogleTranslator
